@@ -14,7 +14,7 @@
 class mServer {
   public:
     void begin();
-    void index();
+    void start();
     String processor(const String path);
 };
 

@@ -1,3 +1,4 @@
+#include "coredecls.h"
 #include "mServer.h"
 
 // Create AsyncWebServer object on port 80
@@ -9,13 +10,31 @@ void mServer::begin(){
     return;
   }
   server.begin();  
+  esp_delay(1);
+  this->start();
 }
 
-void mServer::index(){
+void mServer::start(){
   server.on("/",HTTP_GET, [this](AsyncWebServerRequest *request){
-//    Serial.println("Root Start server OK");
       request->send(200, "text/html", processor("/index.html"));
   });
+
+  server.on("/wlancfg", HTTP_GET, [this](AsyncWebServerRequest *request){
+    request->send(200, "text/html", processor("/wlan/cfg.html"));
+  });
+
+  server.on("/favicon.ico", HTTP_GET, [this](AsyncWebServerRequest *request){
+    request->send(LittleFS, "/favicon.ico", "image/x-icon");
+  });
+
+  server.on("/style.css", HTTP_GET, [this](AsyncWebServerRequest *request){    
+    request->send(LittleFS, "/style.css", "text/css");
+  });
+
+  server.on("/script.js", HTTP_GET, [this](AsyncWebServerRequest *request){
+    request->send(LittleFS, "/script.js", "text/javascript");
+  });
+
 }
 
 

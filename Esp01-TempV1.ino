@@ -22,7 +22,6 @@ void setup() {
   wifiManager.startAP(apSsid.c_str(), apPassword);
 
   websrv.begin();
-  websrv.index();
 }
 
 void loop() {
