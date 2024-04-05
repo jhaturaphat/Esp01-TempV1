@@ -1,0 +1,146 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta charset="UTF-8">
+	<title>ESP8266 Web Form Demo</title>
+	<link rel="stylesheet" href="setting.css">
+</head>
+	<body>	
+		
+		
+
+		<div class="container">		
+		<form action="/networkconfig" method="post">
+			<h1>ตั้งค่าให้กับอุปกรณ์ IOT</h1>
+			<div class="form-group">
+				<label class="label">SSID :  </label>
+				<input type="text" size="15" maxlength="15" value="" id="ssid" placeholder="ชื่อ WiFi">
+			</div>
+			<div>
+				<label class="label">Password :  </label>
+				<input type="text" size="15" maxlength="15"  value="" id="Password" placeholder="รหัส Wifi">
+			</div>
+			<div>
+				<label class="label">IP :  </label>
+				<input type="text" size="15" maxlength="15" id="IP" placeholder="xxx.xxx.xxx.xxx">				
+			</div>		
+			<div>
+				<label class="label">Gateway :  </label>
+				<input type="text" size="3" maxlength="3" id="GW"value="" placeholder="xxx">
+			</div>	
+			<div class="btn-in-div">				
+				<BUTTON type="button" id="networkconfigCmd" value="">บันทึก</BUTTON> 
+				<BUTTON type="reset">reset</BUTTON> 
+			</div>
+		</form>		
+		<hr>
+ 
+		<div>
+			<h1>ตั้งค่า ntp server</h1>
+			<form action="/ntpConfig">
+				<div class="form-group">
+					<label class="label">NTP Server :  </label>
+					<input type="text" size="40" value="time.google.com" id="ntpserver" placeholder="">
+				</div>
+				<div class="btn-in-div">				
+					<BUTTON type="button" id="ntpConfigCmd" value="">บันทึก</BUTTON> 
+					<BUTTON type="reset">reset</BUTTON> 
+				</div>
+			</form>
+		</div>
+		<hr>
+ 
+		<div>
+		<h1>ตั้งค่า ช่วงอุณหภูมิ</h1>				
+		<form action="/alarmConf">   
+			<div class="form-group">
+				<input type="radio" name="DEVICE" id="DEVICE1" value="1" checked="checked" >	
+				<label class="" for="DEVICE1">เซ็นเซอร์ตัวที่ 1</label>
+
+				<input type="radio" name="DEVICE" id="DEVICE2" value="2">				
+				<label class="" for="DEVICE2">เซ็นเซอร์ตัวที่ 2</label>
+			</div>
+
+			<div class="form-group">				
+				<label class="label">Temp Low :  </label>
+				<input type="text" size="8" maxlength="4" value="" id="LOW" placeholder="ใส่ค่าเป็นตัวเลข">
+			</div>
+			<div class="form-group">				
+				<label class="label">Temp High :  </label>
+				<input type="text" size="8" maxlength="4" value="" id="HIGH" placeholder="ใส่ค่าเป็นตัวเลข">
+			</div>
+			<div class="btn-in-div">				
+				<BUTTON type="button" id="alarmConfCmd">บันทึก</BUTTON> 				
+				<BUTTON type="reset">reset</BUTTON> 
+			</div>
+		</form>
+		</div>
+		<hr>
+		<div>
+		<h1>ตั้งค่า Line Token</h1>		
+			
+		<form action="/lineConf">   
+			<div class="form-group">				
+				<label class="label">
+					<img src="img/line_notify.png" width="75">
+				</label>
+				<input type="text" size="45" maxlength="45" value="" id="TOKEN" placeholder="TOKEN">
+			</div>			
+			<div class="btn-in-div">				
+				<BUTTON type="button" id="lineConfCmd">บันทึก</BUTTON> 
+				<BUTTON type="reset">reset</BUTTON> 
+			</div>
+		</form>
+		</div>
+		<hr>
+		<div>
+		<h1>ตั้งค่าสถานที่ติดตั้ง หน่วยงาน</h1>
+		ระบุเป็นชื่อสถานที่ ความยาวไม่เกิน 20 ตัว
+		<form action="/locationCon">			
+			<div class="form-group">
+				<label class="label">ที่ตั้ง :  </label>
+				<input type="text" size="20" maxlength="20" value="ไม่ระบุ" id="LOCATION" placeholder="สถานที่ติดตั้ง">
+			</div>
+			<div class="btn-in-div">				
+				<BUTTON type="button" id="locationConfCmd">บันทึก</BUTTON> 
+				<BUTTON type="reset">reset</BUTTON> 
+			</div>
+		</form>
+		</div>
+			<hr>
+		<div>
+		<h1>ตั้งค่าที่อยู่เครื่อง server ที่ต้องการเก็บ log</h1>				
+			
+				<small>รูปแบบที่เครื่อง IOT ส่งมาจะเป็นรูปแแบของ JSON DATA ดูตัวอย่าง URL: http://IP4อุปกรณ์/temperaturejson</small>
+				<p style="color: red; font-weight: 400;">ตัวอย่าง 192.168.1.10/iot-api/esp.php</p>
+				
+		<form action="/apiConf">   
+			<div class="form-group">				
+				<label class="label">URL :  </label>
+				<input type="text" size="80" maxlength="40" value="" id="URL" placeholder="ใส่url">
+			</div>
+			<div class="btn-in-div">				
+				<BUTTON type="button" id="apiConfCmd">บันทึก</BUTTON> 
+				<BUTTON type="reset">reset</BUTTON> 
+			</div>
+		</form>
+		</div>
+		<hr>
+		<div id="reboot" style="display:none">
+			<h1>รีสตาร์จเครื่อง</h1>
+			<form action="/restart">
+				<div class="btn-in-div">				
+					<BUTTON type="button" id="apiRestrt">Reboot</BUTTON> 					
+				</div>
+			</form>
+		</div>
+		</div>
+		<br>
+		<hr>
+
+		<script type="text/javascript" src="js/sweetalert.js"></script>
+		<script type="text/javascript" src="setting.js"></script>
+</body>
+</html>

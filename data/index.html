@@ -1,38 +1,142 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>ESP WEB SERVER</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="style.css">
+<!DOCTYPE HTML><html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+ <!--sidebar menu  -->
+ <div id="mySidenav" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+  <a href="setting">ตั้งค่า</a>
+  <a href="temperaturejson">ตัวอย่าง JSON</a>
+  
+  </div>
+  <div class="m-open"><span style="font-size:30px;cursor:pointer"  onclick="openNav()">&#9776; เมนู</span></div>
+  <script src="js/highcharts.js"></script>
+  <script>
+    function openNav() {
+      document.getElementById("mySidenav").style.width = "250px";
+    }
     
-  </head>
-  <body>
-    <nav class="topnav">
-      <menu id="check">
-        <div></div>       
-        <div></div>       
-        <div></div> 
-      </menu>      
-      <label class="logo">Design KID</label>
-      <ul>
-        <li><a class="active" href="#">Hoem</a></li>
-        <li><a href="#">About</a></li>
-        <li><a href="#">Service</a></li>
-        <li><a href="#">Facebook</a></li>
-      </ul>
-    </nav>
-    <div class="content">
-      <div class="card-grid">
-        <div class="card">
-          <p class="card-title"><i class="fas fa-lightbulb"></i> GPIO 2</p>
-          <p>
-            <a href="on"><button class="button-on">ON</button></a>
-            <a href="off"><button class="button-off">OFF</button></a>
-          </p>
-          <p class="state">State: %STATE%</p>
-        </div>
-      </div>
-    </div>
-    <script src="script.js"></script>
-  </body>
+    function closeNav() {
+      document.getElementById("mySidenav").style.width = "0";
+    }
+    </script>
+
+  <!--h2>IoT โรงพยาบาลสมเด็จพระยุพราชเดชอุดม</h2-->
+  <div id="chart-temperature" class="container"></div>  
+</body>
+<script>
+var chartT = new Highcharts.Chart({
+  chart:{ 
+    type: 'spline',    
+    renderTo : 'chart-temperature' 
+  },
+  title: { text: 'Temperature' },
+  time: { useUTC: false },  //แก้เวลาให้เป็นปัจจุบัน  
+  series: [{
+    color: '#37879a',
+    name: 'เซ็นเซอร์ตัวที่ 1',
+    data: []    
+  },{
+    color: '#73a9c2',
+    name: 'เซ็นเซอร์ตัวที่ 2',
+    data: []
+  }],
+  plotOptions: {
+    line: { animation: true},
+    series: {       
+      dataLabels: { 
+		enabled: true		
+	  }
+    }
+  },
+  xAxis: {     
+    type: 'datetime',
+    dateTimeLabelFormats: { second: '%H:%M:%S' },    
+  },
+  yAxis: {
+    min: -35,
+    max: 50,    
+    minColor: '#FFFFFF',
+    maxColor: '#000000',
+    title: { text: 'Temperature (Celsius)' },
+    plotBands: [{ // mark the weekend
+        color: '#c0ffdf',
+        from: 2,
+        to: 8,
+        label: {
+          text: 'ช่วงอุณหภูมิ 2 ถึง 8 องศา',
+          align: 'left',
+          y: -16,
+          x: 2
+        }
+      },
+	  { // mark the weekend
+        color: '#009688',
+        from: -25,
+        to: 0,
+        label: {
+          text: 'ช่วงอุณหภูมิ -25 ถึง 0 องศา',
+          align: 'left',
+          y: -25,
+          x: 2
+        }
+      }],
+  },
+  tooltip: {valueSuffix: ' °C'},
+  credits: { enabled: false }
+});
+
+
+setInterval(function ( ) {
+  
+  var xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      var myJson = JSON.parse(this.responseText);    
+      chartT.setTitle({text:myJson.location}); 
+      chartT.update({ yAxis: { plotBands: [{ 
+        color: '#33FFB8',
+        from: myJson.alarmT1[0], 
+        to: myJson.alarmT1[1],
+        label: {
+          text: 'ช่วงอุณหภูมิ '+myJson.alarmT1[0] +' ถึง '+myJson.alarmT1[1]+' องศา',
+          align: 'left',
+          y: -(myJson.alarmT1[1] * (myJson.alarmT1[0])),
+          x: 2
+        }
+        },{ 
+        color: '#33F6FF',
+        from: myJson.alarmT2[0], 
+        to: myJson.alarmT2[1],
+        label: {
+          text: 'ช่วงอุณหภูมิ '+myJson.alarmT2[0] +' ถึง '+myJson.alarmT2[1]+' องศา',
+          align: 'left',
+          y: -(myJson.alarmT2[1] * (myJson.alarmT2[0])),
+          x: 2
+        }
+        }] } }); 
+      var x = (new Date()).getTime(),
+          y = parseFloat(myJson.T1[0]),
+          yy = parseFloat(myJson.T2[0]);         
+      if(chartT.series[0].data.length > 15) {
+        chartT.series[0].addPoint([x, y], true, true, true); 
+        chartT.series[1].addPoint([x, yy], true, true, true); 
+      } else {
+        chartT.series[0].addPoint([x, y], true, false, true);  
+        chartT.series[1].addPoint([x, yy], true, false, true);            
+      }      
+    }
+  };
+  xhttp.open("GET", "temperaturejson", true);
+  //xhttp.open("GET", "http://192.168.100.206/temperaturejson", true);
+  xhttp.send();
+}, 3000 ) ;
+
+
+</script>
 </html>
