@@ -1,4 +1,6 @@
 
+
+
 document.addEventListener("DOMContentLoaded", function(xhttp) {
     loadXMLDoc('/getconfig', getConfig);
     });
@@ -128,12 +130,29 @@ document.addEventListener("DOMContentLoaded", function(xhttp) {
           alertStyle("error", "Oops...","ตรวจสอบ IP Address ใหม่");	
           return;
       }	
-      var url = "/networkconfig?ssid="+document.getElementById("ssid").value;
+      var url = "/ntwcfg"
+      url += "?ssid="+document.getElementById("ssid").value;
       url += "&Password="+document.getElementById("Password").value;
       url += "&IP="+document.getElementById("IP").value;
+      url += "&SN="+document.getElementById("SN").value;
       url += "&GW="+document.getElementById("GW").value;
+      url += "&FIXIP="+document.getElementById("fixip").checked;
       loadXMLDoc(url, alarmConf);
   }, false);
+
+  document.getElementById("fixip").addEventListener('change',function(e){
+    const element = document.getElementsByClassName("network");
+    if (e.currentTarget.checked) {        
+        // alert('checked');        
+        for(i=0; i<element.length; i++){
+            element[i].style.display = "flex";
+        }
+      } else {
+        for(i=0; i<element.length; i++){
+            element[i].style.display = "none";
+        }
+      }
+  }), false;
 
   /* ตั้งค่า ntpConfigCmd */	
   document.getElementById("ntpConfigCmd").addEventListener('click', function(e){

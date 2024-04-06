@@ -8,36 +8,42 @@
 	<link rel="stylesheet" href="setting.css">
 </head>
 	<body>	
-		
-		
-
 		<div class="container">		
-		<form action="/networkconfig" method="post">
+		<div class="row">
 			<h1>ตั้งค่าให้กับอุปกรณ์ IOT</h1>
-			<div class="form-group">
-				<label class="label">SSID :  </label>
-				<input type="text" size="15" maxlength="15" value="" id="ssid" placeholder="ชื่อ WiFi">
-			</div>
-			<div>
-				<label class="label">Password :  </label>
-				<input type="text" size="15" maxlength="15"  value="" id="Password" placeholder="รหัส Wifi">
-			</div>
-			<div>
-				<label class="label">IP :  </label>
-				<input type="text" size="15" maxlength="15" id="IP" placeholder="xxx.xxx.xxx.xxx">				
-			</div>		
-			<div>
-				<label class="label">Gateway :  </label>
-				<input type="text" size="3" maxlength="3" id="GW"value="" placeholder="xxx">
-			</div>	
-			<div class="btn-in-div">				
-				<BUTTON type="button" id="networkconfigCmd" value="">บันทึก</BUTTON> 
-				<BUTTON type="reset">reset</BUTTON> 
-			</div>
-		</form>		
-		<hr>
+			<form action="/networkconfig" method="post">				
+				<div class="form-group">
+					<label class="label">SSID :  </label>
+					<input type="text" size="15" maxlength="15" value="" id="ssid" placeholder="ชื่อ WiFi">
+				</div>
+				<div class="form-group">
+					<label class="label">Password :  </label>
+					<input type="text" size="15" maxlength="15"  value="" id="Password" placeholder="รหัส Wifi">
+				</div>
+				<div class="form-group-row">
+					<input type="checkbox" name="fixip" id="fixip"><label for="fixip">Static IP</label>
+				</div>
+				<div class="form-group network">
+					<label class="label">IP Address:  </label>
+					<input type="text" size="15"  id="IP" value="192.168.1.253" placeholder="xxx.xxx.xxx.xxx">				
+				</div>	
+				<div class="form-group network">
+					<label class="label">Subnet Mask :  </label>
+					<input type="text" size="15" id="SN" value="255.255.255.0" placeholder="xxx.xxx.xxx.xxx">				
+				</div>		
+				<div class="form-group network">
+					<label class="label">Gateway :  </label>
+					<input type="text" size="15" id="GW"value="192.168.1.1" placeholder="xxx.xxx.xxx.xxx">
+				</div>	
+				<div class="btn-in-div">				
+					<BUTTON type="button" id="networkconfigCmd" value="">บันทึก</BUTTON> 
+					<BUTTON type="reset">reset</BUTTON> 
+				</div>
+			</form>	
+		</div>	
+		
  
-		<div>
+		<div class="row">
 			<h1>ตั้งค่า ntp server</h1>
 			<form action="/ntpConfig">
 				<div class="form-group">
@@ -50,12 +56,12 @@
 				</div>
 			</form>
 		</div>
-		<hr>
+		
  
-		<div>
+		<div class="row">
 		<h1>ตั้งค่า ช่วงอุณหภูมิ</h1>				
 		<form action="/alarmConf">   
-			<div class="form-group">
+			<div class="form-group-row">
 				<input type="radio" name="DEVICE" id="DEVICE1" value="1" checked="checked" >	
 				<label class="" for="DEVICE1">เซ็นเซอร์ตัวที่ 1</label>
 
@@ -64,11 +70,11 @@
 			</div>
 
 			<div class="form-group">				
-				<label class="label">Temp Low :  </label>
+				<label class="label">Min :  </label>
 				<input type="text" size="8" maxlength="4" value="" id="LOW" placeholder="ใส่ค่าเป็นตัวเลข">
 			</div>
 			<div class="form-group">				
-				<label class="label">Temp High :  </label>
+				<label class="label">Max :  </label>
 				<input type="text" size="8" maxlength="4" value="" id="HIGH" placeholder="ใส่ค่าเป็นตัวเลข">
 			</div>
 			<div class="btn-in-div">				
@@ -77,15 +83,16 @@
 			</div>
 		</form>
 		</div>
-		<hr>
-		<div>
-		<h1>ตั้งค่า Line Token</h1>		
+		
+		<div class="row">
+		<div class="label-txt">
+			<h1>ตั้งค่า Line Token</h1>				
+			<img src="img/line_notify.png" class="icon-line">			
+		</div>
+		
 			
 		<form action="/lineConf">   
-			<div class="form-group">				
-				<label class="label">
-					<img src="img/line_notify.png" width="75">
-				</label>
+			<div class="form-group">
 				<input type="text" size="45" maxlength="45" value="" id="TOKEN" placeholder="TOKEN">
 			</div>			
 			<div class="btn-in-div">				
@@ -94,8 +101,8 @@
 			</div>
 		</form>
 		</div>
-		<hr>
-		<div>
+		
+		<div class="row">
 		<h1>ตั้งค่าสถานที่ติดตั้ง หน่วยงาน</h1>
 		ระบุเป็นชื่อสถานที่ ความยาวไม่เกิน 20 ตัว
 		<form action="/locationCon">			
@@ -109,8 +116,8 @@
 			</div>
 		</form>
 		</div>
-			<hr>
-		<div>
+			
+		<div class="row">
 		<h1>ตั้งค่าที่อยู่เครื่อง server ที่ต้องการเก็บ log</h1>				
 			
 				<small>รูปแบบที่เครื่อง IOT ส่งมาจะเป็นรูปแแบของ JSON DATA ดูตัวอย่าง URL: http://IP4อุปกรณ์/temperaturejson</small>
@@ -127,7 +134,7 @@
 			</div>
 		</form>
 		</div>
-		<hr>
+		
 		<div id="reboot" style="display:none">
 			<h1>รีสตาร์จเครื่อง</h1>
 			<form action="/restart">
@@ -138,7 +145,7 @@
 		</div>
 		</div>
 		<br>
-		<hr>
+		
 
 		<script type="text/javascript" src="js/sweetalert.js"></script>
 		<script type="text/javascript" src="setting.js"></script>
