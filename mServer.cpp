@@ -57,7 +57,7 @@ void mServer::start(){
   });
   
   server.on("/ntwcfg", HTTP_GET, [&WifiCfg](AsyncWebServerRequest *request) {
-        WifiCfg.handleNetConfig(request);
+        WifiCfg.handleWlanConfig(request);
     });
   
 

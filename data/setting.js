@@ -131,8 +131,8 @@ document.addEventListener("DOMContentLoaded", function(xhttp) {
           return;
       }	
       var url = "/ntwcfg"
-      url += "?ssid="+document.getElementById("ssid").value;
-      url += "&Password="+document.getElementById("Password").value;
+      url += "?SSID="+document.getElementById("ssid").value;
+      url += "&PASS="+document.getElementById("Password").value;
       url += "&IP="+document.getElementById("IP").value;
       url += "&SN="+document.getElementById("SN").value;
       url += "&GW="+document.getElementById("GW").value;
