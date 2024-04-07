@@ -37,7 +37,7 @@
 				</div>	
 				<div class="btn-in-div">				
 					<BUTTON type="button" id="networkconfigCmd" value="">บันทึก</BUTTON> 
-					<BUTTON type="reset">reset</BUTTON> 
+					<BUTTON type="reset" id="wlanReset">reset</BUTTON> 
 				</div>
 			</form>	
 		</div>	
@@ -95,27 +95,36 @@
 						<input type="text" size="2" maxlength="2" value="" id="alS" placeholder="ss">
 					</div>					 
 				</div>
+				<small>เครื่องจะแจ้งเตือนตามเวลาที่ระบุ</small>
+				<div class="btn-in-div">				
+					<BUTTON type="button" id="alarmStatusCmd">บันทึก</BUTTON> 
+					<BUTTON type="reset">reset</BUTTON> 
+				</div>
 			</form>
+			
 		</div>
 
 		<div class="row">
 			<h1>ความถี่</h1>
-			<form action="/alarmStatus">
+			<form action="/alarmInterval">
 				<div class="form-group">				
 					<label class="label">หน่วยวินาที่ </label>					
 					<input type="text"value="" id="alH" placeholder="">
 										 
 				</div>
+				<div class="btn-in-div">				
+					<BUTTON type="button" id="alarmIntervalCmd">บันทึก</BUTTON> 
+					<BUTTON type="reset">reset</BUTTON> 
+				</div>
 			</form>
+			<small>เครื่องจะส่งแจ้งเตือนทกๆวินาที่ หน่วยเป็นวินาที</small>
 		</div>
 		
 		<div class="row">
 		<div class="label-txt">
 			<h1>ตั้งค่า Line Token</h1>				
 			<img src="img/line_notify.png" class="icon-line">			
-		</div>
-		
-			
+		</div>			
 		<form action="/lineConf">   
 			<div class="form-group">
 				<input type="text" size="45" maxlength="45" value="" id="TOKEN" placeholder="TOKEN">
@@ -125,16 +134,17 @@
 				<BUTTON type="reset">reset</BUTTON> 
 			</div>
 		</form>
+		<small></small>
 		</div>
 		
 		<div class="row">
-		<h1>ตั้งค่าสถานที่ติดตั้ง หน่วยงาน</h1>
-		ระบุเป็นชื่อสถานที่ ความยาวไม่เกิน 20 ตัว
+		<h1>ตั้งค่าสถานที่ติดตั้ง หน่วยงาน</h1>		
 		<form action="/locationCon">			
 			<div class="form-group">
 				<label class="label">ที่ตั้ง :  </label>
 				<input type="text" size="20" maxlength="20" value="ไม่ระบุ" id="LOCATION" placeholder="สถานที่ติดตั้ง">
 			</div>
+			<small>ระบุเป็นชื่อสถานที่ ความยาวไม่เกิน 20 ตัว</small>
 			<div class="btn-in-div">				
 				<BUTTON type="button" id="locationConfCmd">บันทึก</BUTTON> 
 				<BUTTON type="reset">reset</BUTTON> 
@@ -159,8 +169,24 @@
 			</div>
 		</form>
 		</div>
+
+		<div class="row">
+			<h1>Restart ทุกๆ</h1>
+			<form action="/alarmInterval">
+				<div class="form-group">				
+					<label class="label">หน่วยวินาที่ </label>					
+					<input type="text"value="" id="alH" placeholder="">
+										 
+				</div>
+				<div class="btn-in-div">				
+					<BUTTON type="button" id="alarmIntervalCmd">บันทึก</BUTTON> 
+					<BUTTON type="reset">reset</BUTTON> 
+				</div>
+			</form>
+			<small>เครื่องจะส่งแจ้งเตือนทกๆวินาที่ หน่วยเป็นวินาที</small>
+		</div>
 		
-		<div id="reboot" style="display:none">
+		<div id="reboot" style="" class="row">
 			<h1>รีสตาร์จเครื่อง</h1>
 			<form action="/restart">
 				<div class="btn-in-div">				
