@@ -7,6 +7,15 @@ void WlanManager::startAP(const char* ssid, const char* password) {
 }
 
 void WlanManager::handleWlanConfig(AsyncWebServerRequest *request){
+  if(request->hasParam("plain", true)){
+    DynamicJsonDocument doc(1024);
+    DeserializationError error = deserializeJson(doc, request->getParam("plain", true)->value());
+    
+    if(error){
+      // ส่งข้อความของข้อผิดพลาดไปใน response
+    request->send(400, "application/json", "{\"error\":\"deserializeJson() failed\"}"); 
+    }
+  }
   if(request->hasParam("SSID") && request->hasParam("PASS")){
     String IP = request->getParam("IP")->value();
     String SN = request->getParam("SN")->value();

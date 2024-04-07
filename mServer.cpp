@@ -54,10 +54,17 @@ void mServer::start(){
     request->send(LittleFS, "/js/script.js", "text/javascript");
   });
   
-  server.on("/ntwcfg", HTTP_GET, [](AsyncWebServerRequest *request)   {
+  server.on("/ntwcfg", HTTP_POST, [](AsyncWebServerRequest *request)   {
         WlanManager WlanCfg;
         WlanCfg.handleWlanConfig(request);
     });
+  
+  server.on("/location",HTTP_POST, [](AsyncWebServerRequest *request){
+    
+  });
+  server.on("/restart", HTTP_GET,[](AsyncWebServerRequest *request){
+    ESP.restart();
+  });
   
 
 }
