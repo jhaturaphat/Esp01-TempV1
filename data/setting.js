@@ -136,6 +136,7 @@ document.addEventListener("DOMContentLoaded", function(xhttp) {
       url += "&IP="+document.getElementById("IP").value;
       url += "&SN="+document.getElementById("SN").value;
       url += "&GW="+document.getElementById("GW").value;
+      url += "&DNS="+document.getElementById("DNS").value;
       url += "&FIXIP="+document.getElementById("fixip").checked;
       loadXMLDoc(url, alarmConf);
   }, false);
@@ -153,6 +154,15 @@ document.addEventListener("DOMContentLoaded", function(xhttp) {
         }
       }
   }), false;
+
+  document.getElementById("wlanReset").addEventListener('click', function(e){
+    e.preventDefault();
+    document.getElementById("fixip").checked = false;
+    const element = document.getElementsByClassName("network");
+    for(i=0; i<element.length; i++){
+        element[i].style.display = "none";
+    }
+  })
 
   /* ตั้งค่า ntpConfigCmd */	
   document.getElementById("ntpConfigCmd").addEventListener('click', function(e){

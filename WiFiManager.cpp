@@ -11,6 +11,7 @@ void WiFiManager::handleWlanConfig(AsyncWebServerRequest *request){
     String IP = request->getParam("IP")->value();
     String SN = request->getParam("SN")->value();
     String GW = request->getParam("GW")->value();
+    String DNS = request->getParam("DNS")->value();
     String SSID = request->getParam("SSID")->value();
     String PASS = request->getParam("PASS")->value();
     String FIXIP = request->getParam("FIXIP")->value();
@@ -27,6 +28,7 @@ void WiFiManager::handleWlanConfig(AsyncWebServerRequest *request){
     wfconfig.println("  \"ip\": \"" + IP + "\"");
     wfconfig.println("  \"subnet\": \"" + SN + "\"");
     wfconfig.println("  \"gateway\": \"" + GW + "\"");
+    wfconfig.println("  \"dns\": \"" + DNS + "\"");
     wfconfig.println("  \"fixip\": \"" + FIXIP + "\"");
     wfconfig.println("}");
     wfconfig.close();
@@ -63,6 +65,7 @@ bool WiFiManager::WlanSetup(){
   const char* ip = doc["ip"];
   const char* subnet = doc["subnet"];
   const char* gateway = doc["gateway"];
+  const char* dns = doc["dns"];
   const String fixip = doc["fixip"];
 
   // กำหนดค่า IP address ในลักษณะของ IPAddress object
