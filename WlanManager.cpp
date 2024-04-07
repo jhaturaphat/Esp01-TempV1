@@ -1,12 +1,12 @@
 #include "HardwareSerial.h"
-#include "WiFiManager.h"
+#include "WlanManager.h"
 
-void WiFiManager::startAP(const char* ssid, const char* password) {
+void WlanManager::startAP(const char* ssid, const char* password) {
   WiFi.softAP(ssid, password);
   Serial.println("Access Point started");
 }
 
-void WiFiManager::handleWlanConfig(AsyncWebServerRequest *request){
+void WlanManager::handleWlanConfig(AsyncWebServerRequest *request){
   if(request->hasParam("SSID") && request->hasParam("PASS")){
     String IP = request->getParam("IP")->value();
     String SN = request->getParam("SN")->value();
@@ -39,7 +39,7 @@ void WiFiManager::handleWlanConfig(AsyncWebServerRequest *request){
   }
 }
 
-bool WiFiManager::WlanSetup(){
+bool WlanManager::WlanSetup(){
   File wfconfig = LittleFS.open("/config/wifi.json","r");
   if(!wfconfig){
       Serial.println("Failed to open config file");

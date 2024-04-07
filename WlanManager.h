@@ -7,7 +7,7 @@
 #include "LittleFS.h"
 #include <ArduinoJson.h> // ต้องเพิ่มไลบรารี ArduinoJson
 
-class WiFiManager {
+class WlanManager {
   public:
     void startAP(const char* ssid, const char* password);  
     static void handleWlanConfig(AsyncWebServerRequest *request);

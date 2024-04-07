@@ -1,11 +1,9 @@
 #include "coredecls.h"
 #include "mServer.h"
-#include "WiFiManager.h"
+#include "WlanManager.h"
 
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
-// สร้างออปเจ็กต์ WiFiManager
-WiFiManager WifiCfg;
 
 void mServer::begin(){
   if(!LittleFS.begin()){
@@ -56,8 +54,9 @@ void mServer::start(){
     request->send(LittleFS, "/js/script.js", "text/javascript");
   });
   
-  server.on("/ntwcfg", HTTP_GET, [&WifiCfg](AsyncWebServerRequest *request) {
-        WifiCfg.handleWlanConfig(request);
+  server.on("/ntwcfg", HTTP_GET, [](AsyncWebServerRequest *request)   {
+        WlanManager WlanCfg;
+        WlanCfg.handleWlanConfig(request);
     });
   
 
