@@ -69,11 +69,14 @@ void Router::start(){
   });
   
   server.on("/ntwcfg", HTTP_GET, [](AsyncWebServerRequest *request)   {
-        WlanManager WlanCfg;
+        WlanManager WlanCfg;  
         WlanCfg.handleWlanConfig(request);
     });
 
-
+  server.on("/temp",HTTP_GET,[](AsyncWebServerRequest *request){
+    
+  });
+  
 
   server.on("/wifi.json", HTTP_GET, [this](AsyncWebServerRequest *request){
     request->send(LittleFS, "/config/wifi.json", "application/json");
@@ -88,7 +91,9 @@ void Router::start(){
   server.onNotFound(notFound);  
 }
 
-
+void Router::setTemperature(float temp1, float temp2){
+  temperature1 = temp1; temperature2 = temp2;
+}
 
 String Router::processor(const String path){
   Serial.println("Function Processor OK");

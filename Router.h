@@ -16,7 +16,13 @@ class Router {
   public:
     void begin();
     void start();
-    String processor(const String path);
+    String processor(const String path);    
+    void setTemperature(float temp1, float temp2);
+
+  private:
+    float temperature1 = 0.0;
+    float temperature2 = 0.0;
+    float location = "Not Set";
 };
 
 #endif

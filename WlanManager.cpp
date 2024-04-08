@@ -6,6 +6,7 @@ void WlanManager::startAP(const char* ssid, const char* password) {
   MDNS.addService("http","tcp",80);
   WiFi.softAP(ssid, password);
   Serial.println("Access Point started");
+  
 }
 
 //ดึงข้อมูล ChipID
@@ -52,7 +53,7 @@ void WlanManager::handleWlanConfig(AsyncWebServerRequest *request) {
 bool WlanManager::WlanSetup() {
   File wfconfig = LittleFS.open("/config/wifi.json", "r");
   if (!wfconfig) {
-    Serial.println("Failed to open config file");
+    Serial.println("Failed to open config file at WlanManager");
     return false;
   }
   // อ่านข้อมูลจากไฟล์
@@ -73,8 +74,8 @@ bool WlanManager::WlanSetup() {
   const char* ssid = doc["ssid"].as<const char*>();
   const char* password = doc["password"].as<const char*>();
   const char* ip = doc["ip"].as<const char*>();
-  const char* subnet = doc["subnet"].as<const char*>();
-  const char* gateway = doc["gateway"].as<const char*>();
+  const char* subnet = doc["sn"].as<const char*>();
+  const char* gateway = doc["gw"].as<const char*>();
   const char* dns = doc["dns"].as<const char*>();
   const String fixip = doc["fixip"].as<String>();
 
@@ -98,6 +99,8 @@ bool WlanManager::WlanSetup() {
     return false;
   }
   Serial.println(WiFi.localIP());
+  Serial.println(WiFi.subnetMask());
+  Serial.println(WiFi.gatewayIP());
   return true;
 }
 
@@ -190,4 +193,3 @@ void WlanManager::updateWlanConfig(const char* newSSID, const char* newPassword)
 
   Serial.println("Config file updated successfully");
 }
-
