@@ -1,5 +1,5 @@
-#ifndef mServer_h
-#define mServer_h
+#ifndef Router_h
+#define Router_h
 
 #ifdef ESP32
 #include <WiFi.h>
@@ -12,7 +12,7 @@
 #include <ESPAsyncWebServer.h>
 
 
-class mServer {
+class Router {
   public:
     void begin();
     void start();

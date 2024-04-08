@@ -11,7 +11,7 @@
 		<div class="container">		
 		<div class="row">
 			<h1>ตั้งค่าให้กับอุปกรณ์ IOT</h1>
-			<form action="/ntwcfg" method="post">				
+			<form action="/ntwcfg" method="post" id="ntwcfg">				
 				<div class="form-group">
 					<label class="label">SSID :  </label>
 					<input type="text" size="15" maxlength="15" value="" id="ssid" placeholder="ชื่อ WiFi">
@@ -179,8 +179,7 @@
 			<form action="/alarmInterval">
 				<div class="form-group">				
 					<label class="label">หน่วยวินาที่ </label>					
-					<input type="text"value="" id="alH" placeholder="">
-										 
+					<input type="text"value="" id="alH" placeholder="">										 
 				</div>
 				<div class="btn-in-div">				
 					<BUTTON type="button" id="alarmIntervalCmd">บันทึก</BUTTON> 
@@ -202,7 +201,7 @@
 		<br>
 		
 
-		<script type="text/javascript" src="js/sweetalert.js"></script>
-		<script type="text/javascript" src="setting.js"></script>
+		<script src="js/sweetalert.js"></script>
+		<script src="setting.js"></script>		
 </body>
 </html>

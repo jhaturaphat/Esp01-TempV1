@@ -1,67 +1,68 @@
 #include "HardwareSerial.h"
 #include "WlanManager.h"
 
+
 void WlanManager::startAP(const char* ssid, const char* password) {
+  MDNS.addService("http","tcp",80);
   WiFi.softAP(ssid, password);
   Serial.println("Access Point started");
 }
 
-void WlanManager::handleWlanConfig(AsyncWebServerRequest *request){
-  if(request->hasParam("plain", true)){
-    DynamicJsonDocument doc(1024);
-    DeserializationError error = deserializeJson(doc, request->getParam("plain", true)->value());
-    
-    if(error){
-      // ส่งข้อความของข้อผิดพลาดไปใน response
-    request->send(400, "application/json", "{\"error\":\"deserializeJson() failed\"}"); 
+//ดึงข้อมูล ChipID
+String WlanManager::chipID(){
+  String chipID = "ESP_123456";
+  #ifdef ARDUINO_ARCH_ESP32  //ถ้าเป็น ESP32
+    uint32_t chipId = 0;
+      for(int i=0; i<17; i=i+8) {
+        chipId |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
+      }
+      chipID = String(chipId);
+  #elif defined(ARDUINO_ARCH_ESP8266) //ถ้าเป็น ESP8266
+    chipID = String(ESP.getChipId());
+  #endif
+  return chipID;
+}
+//รับข้อมูลมาเก็บไว้
+void WlanManager::handleWlanConfig(AsyncWebServerRequest *request) {
+    String ssid = request->getParam("ssid")->value();    
+    String password = request->getParam("password")->value();    
+    String ip = request->getParam("ipaddress")->value();    
+    String sn = request->getParam("subnetmask")->value();    
+    String gw = request->getParam("gateway")->value();    
+    String dns = request->getParam("dns")->value();    
+    String fixip = request->getParam("fixip")->value();
+
+    StaticJsonDocument<256> doc;
+    doc["ssid"] = ssid;
+    doc["password"] = password;
+    doc["ip"] = ip;
+    doc["sn"] = sn;
+    doc["gw"] = gw;
+    doc["dns"] = dns;
+    doc["fixip"] = fixip;
+
+    File configFile = LittleFS.open("/config/wifi.json", "w");
+    if(serializeJson(doc, configFile) == 0) {
+      request->send(400, "application/json", "{\"result\":\"Failed to write to config file\"}");
     }
-  }
-  if(request->hasParam("SSID") && request->hasParam("PASS")){
-    String IP = request->getParam("IP")->value();
-    String SN = request->getParam("SN")->value();
-    String GW = request->getParam("GW")->value();
-    String DNS = request->getParam("DNS")->value();
-    String SSID = request->getParam("SSID")->value();
-    String PASS = request->getParam("PASS")->value();
-    String FIXIP = request->getParam("FIXIP")->value();
-
-    File wfconfig = LittleFS.open("/config/wifi.json","w");
-    if(!wfconfig){
-      request->send(500,"text/plain", "Failed to open config file for writing");
-      return;
-    }
-
-    wfconfig.println("{");
-    wfconfig.println("  \"ssid\": \"" + SSID + "\",");
-    wfconfig.println("  \"password\": \"" + PASS + "\",");
-    wfconfig.println("  \"ip\": \"" + IP + "\"");
-    wfconfig.println("  \"subnet\": \"" + SN + "\"");
-    wfconfig.println("  \"gateway\": \"" + GW + "\"");
-    wfconfig.println("  \"dns\": \"" + DNS + "\"");
-    wfconfig.println("  \"fixip\": \"" + FIXIP + "\"");
-    wfconfig.println("}");
-    wfconfig.close();
-
-    request->send(200,"text/plain", "OK");
-  }else{
-    request->send(200,"text/plain", "ไม่มีพารามิเตอร์ ssid และ password ส่งมาด้วย");
-  }
+     configFile.close();
+    request->send(200, "application/json", "{\"result\":\"Config file updated successfully\"}");
 }
 
-bool WlanManager::WlanSetup(){
-  File wfconfig = LittleFS.open("/config/wifi.json","r");
-  if(!wfconfig){
-      Serial.println("Failed to open config file");
-      return false;
-    }
-    // อ่านข้อมูลจากไฟล์
+bool WlanManager::WlanSetup() {
+  File wfconfig = LittleFS.open("/config/wifi.json", "r");
+  if (!wfconfig) {
+    Serial.println("Failed to open config file");
+    return false;
+  }
+  // อ่านข้อมูลจากไฟล์
   size_t size = wfconfig.size();
   std::unique_ptr<char[]> buf(new char[size]);
   wfconfig.readBytes(buf.get(), size);
   wfconfig.close();
 
   // แปลง JSON เป็นโครงสร้างข้อมูล
-  StaticJsonDocument<256> doc;
+  StaticJsonDocument<1024> doc;
   DeserializationError error = deserializeJson(doc, buf.get());
   if (error) {
     Serial.println("Failed to parse config file");
@@ -69,13 +70,13 @@ bool WlanManager::WlanSetup(){
   }
 
   // ดึงค่าจาก JSON
-  const char* ssid = doc["ssid"];
-  const char* password = doc["password"];
-  const char* ip = doc["ip"];
-  const char* subnet = doc["subnet"];
-  const char* gateway = doc["gateway"];
-  const char* dns = doc["dns"];
-  const String fixip = doc["fixip"];
+  const char* ssid = doc["ssid"].as<const char*>();
+  const char* password = doc["password"].as<const char*>();
+  const char* ip = doc["ip"].as<const char*>();
+  const char* subnet = doc["subnet"].as<const char*>();
+  const char* gateway = doc["gateway"].as<const char*>();
+  const char* dns = doc["dns"].as<const char*>();
+  const String fixip = doc["fixip"].as<String>();
 
   // กำหนดค่า IP address ในลักษณะของ IPAddress object
   IPAddress ipAddr;
@@ -84,10 +85,12 @@ bool WlanManager::WlanSetup(){
   subnetMask.fromString(subnet);
   IPAddress gatewayAddr;
   gatewayAddr.fromString(gateway);
+  IPAddress dnsAddr;
+  dnsAddr.fromString(dns);
 
-   // กำหนดค่าให้ ESP8266
-   if(fixip == "true") WiFi.config(ipAddr, gatewayAddr, subnetMask); 
-  
+  // กำหนดค่าให้ ESP8266 ถ้าต้องการ Fixip
+  if (fixip == "true") WiFi.config(ipAddr, dnsAddr, gatewayAddr, subnetMask);
+
   // โค้ดการเชื่อมต่อ Wi-Fi
   WiFi.begin(ssid, password);
   if (WiFi.waitForConnectResult() != WL_CONNECTED) {
@@ -95,7 +98,96 @@ bool WlanManager::WlanSetup(){
     return false;
   }
   Serial.println(WiFi.localIP());
-
-
   return true;
 }
+
+void WlanManager::updateWlanConfig(const char* fixIP) {
+  // เปิดไฟล์ config.json เพื่ออ่านข้อมูลเดิม
+  File configFile = LittleFS.open("/config/wifi.json", "r");
+  if (!configFile) {
+    Serial.println("Failed to open config file");
+    return;
+  }
+
+  // อ่านข้อมูลจากไฟล์
+  size_t size = configFile.size();
+  std::unique_ptr<char[]> buf(new char[size]);
+  configFile.readBytes(buf.get(), size);
+  configFile.close();
+
+  // แปลง JSON เป็นโครงสร้างข้อมูล
+  StaticJsonDocument<256> doc;
+  DeserializationError error = deserializeJson(doc, buf.get());
+  if (error) {
+    Serial.println("Failed to parse config file");
+    return;
+  }
+
+  // อัพเดทค่าทั้งหมด
+  doc["fixip"] = fixIP;
+
+  // เปิดไฟล์ config.json อีกครั้งเพื่อเขียนข้อมูลอัพเดทลงไป
+  configFile = LittleFS.open("/config/wifi.json", "w");
+  if (!configFile) {
+    Serial.println("Failed to open config file for writing");
+    return;
+  }
+
+  // ส่งข้อมูลอัพเดทลงไปในไฟล์
+  if (serializeJson(doc, configFile) == 0) {
+    Serial.println("Failed to write to config file");
+  }
+
+  // ปิดไฟล์
+  configFile.close();
+
+  Serial.println("Config file updated successfully");
+}
+
+void WlanManager::updateWlanConfig(const char* newSSID, const char* newPassword) {
+  // เปิดไฟล์ config.json เพื่ออ่านข้อมูลเดิม
+  File configFile = LittleFS.open("/config/wifi.json", "r");
+  if (!configFile) {
+    Serial.println("Failed to open config file");
+    return;
+  }
+
+  // อ่านข้อมูลจากไฟล์
+  size_t size = configFile.size();
+  std::unique_ptr<char[]> buf(new char[size]);
+  configFile.readBytes(buf.get(), size);
+  configFile.close();
+
+  // แปลง JSON เป็นโครงสร้างข้อมูล
+  StaticJsonDocument<256> doc;
+  DeserializationError error = deserializeJson(doc, buf.get());
+  if (error) {
+    Serial.println("Failed to parse config file");
+    return;
+  }
+
+  // อัพเดทค่าทั้งหมด
+  doc["ssid"] = newSSID;
+  doc["password"] = newPassword;
+  // doc["ip"] = newIP;
+  // doc["subnet"] = newSubnet;
+  // doc["gateway"] = newGateway;
+
+  // เปิดไฟล์ config.json อีกครั้งเพื่อเขียนข้อมูลอัพเดทลงไป
+  configFile = LittleFS.open("/config/wifi.json", "w");
+  if (!configFile) {
+    Serial.println("Failed to open config file for writing");
+    return;
+  }
+
+  // ส่งข้อมูลอัพเดทลงไปในไฟล์
+  if (serializeJson(doc, configFile) == 0) {
+    Serial.println("Failed to write to config file");
+  }
+
+  // ปิดไฟล์
+  configFile.close();
+
+  Serial.println("Config file updated successfully");
+}
+

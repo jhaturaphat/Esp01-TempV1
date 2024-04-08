@@ -1,27 +1,25 @@
-#include <Arduino.h>
-#include "WiFiManager.h"
-#include "mServer.h"
 
-// สร้างออปเจ็กต์ WiFiManager
-WiFiManager wifiManager;
+#include <Arduino.h>
+#include "WlanManager.h"
+#include "Router.h"
+
+// สร้างออปเจ็กต์ WlanManager
+WlanManager wlan;
 //สร้างออบเจ็กต์ mServer
-mServer websrv;
+Router router;
 void setup() {
   Serial.begin(115200);
-  
-  // ดึง Chip ID ของ ESP8266
-  String chipID = String(ESP.getChipId());
-  
+
   // สร้าง SSID ขึ้นมาจาก Chip ID
-  String apSsid = "ESP_" + chipID;
+  String apSsid = "ESP_" + wlan.chipID();
   
   // กำหนดรหัส WiFi สำหรับโหมด Access Point
   const char* apPassword = "password";
   
   // เริ่มโหมด Access Point
-  wifiManager.startAP(apSsid.c_str(), apPassword);
+  wlan.startAP(apSsid.c_str(), apPassword);
   
-  websrv.begin();
+  router.begin();
 }
 
 void loop() {

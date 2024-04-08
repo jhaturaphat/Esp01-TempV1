@@ -2,7 +2,8 @@
 
 
 document.addEventListener("DOMContentLoaded", function(xhttp) {
-    loadXMLDoc('/getconfig', getConfig);
+    // ทำงานเมื่อโปรแกรมถูกโหลด
+     loadXMLDoc('/wifi.json', getConfig);
     });
 
   function loadXMLDoc(url,cFunction) {
@@ -130,15 +131,32 @@ document.addEventListener("DOMContentLoaded", function(xhttp) {
           alertStyle("error", "Oops...","ตรวจสอบ IP Address ใหม่");	
           return;
       }	
-      var url = "/ntwcfg"
-      url += "?SSID="+document.getElementById("ssid").value;
-      url += "&PASS="+document.getElementById("Password").value;
-      url += "&IP="+document.getElementById("IP").value;
-      url += "&SN="+document.getElementById("SN").value;
-      url += "&GW="+document.getElementById("GW").value;
-      url += "&DNS="+document.getElementById("DNS").value;
-      url += "&FIXIP="+document.getElementById("fixip").checked;
-      loadXMLDoc(url, alarmConf);
+      // ดึงข้อมูลจากฟอร์ม HTML
+    var ssid = document.getElementById('ssid').value;
+    var password = document.getElementById('Password').value;
+    var fixip = document.getElementById('fixip').checked;
+    var ip = document.getElementById('IP').value;
+    var subnetMask = document.getElementById('SN').value;
+    var gateway = document.getElementById('GW').value;
+    var dns = document.getElementById('DNS').value;
+// ตัวอย่างการส่ง request แบบ POST ด้วย fetch API
+fetch("/ntwcfg", {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'text/plain' // กำหนด Content-Type เป็น application/json
+    },
+    body: JSON.stringify(jsonData) // แปลงข้อมูล JSON เป็น string และส่งไปใน body ของ request
+})
+.then(response => {
+    // ตรวจสอบว่า request สำเร็จหรือไม่
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    // ดำเนินการต่อไป เช่น การจัดการ response
+})
+.catch(error => {
+    console.error('There has been a problem with your fetch operation:', error);
+});     
   }, false);
 
   document.getElementById("fixip").addEventListener('change',function(e){

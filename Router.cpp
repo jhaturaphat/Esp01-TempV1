@@ -1,21 +1,31 @@
+#ifdef ESP32
+
+#elif defined(ESP8266)
 #include "coredecls.h"
-#include "mServer.h"
+#endif
+
+#include "Router.h"
 #include "WlanManager.h"
+
 
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
 
-void mServer::begin(){
+void notFound(AsyncWebServerRequest *request) {
+    request->send(404, "text/plain", "Not found");
+}
+
+void Router::begin(){
   if(!LittleFS.begin()){
     Serial.println("An Error has occurred while mounting LittleFS");
     return;
   }
   server.begin();  
-  esp_delay(1);
+  delay(1);
   this->start();
 }
 
-void mServer::start(){
+void Router::start(){
   server.on("/",HTTP_GET, [this](AsyncWebServerRequest *request){
       request->send(200, "text/html", processor("/index.html"));
   });
@@ -30,6 +40,7 @@ void mServer::start(){
   server.on("/setting.js", HTTP_GET, [this](AsyncWebServerRequest *request){
     request->send(LittleFS, "/setting.js", "text/javascript");
   });
+  
 
 // Icon
   server.on("/favicon.ico", HTTP_GET, [this](AsyncWebServerRequest *request){
@@ -53,12 +64,20 @@ void mServer::start(){
   server.on("/script.js", HTTP_GET, [this](AsyncWebServerRequest *request){
     request->send(LittleFS, "/js/script.js", "text/javascript");
   });
+  server.on("/wifi.json", HTTP_GET, [this](AsyncWebServerRequest *request){
+    request->send(LittleFS, "/config/wifi.json", "application/json");
+  });
   
-  server.on("/ntwcfg", HTTP_POST, [](AsyncWebServerRequest *request)   {
+  server.on("/ntwcfg", HTTP_GET, [](AsyncWebServerRequest *request)   {
         WlanManager WlanCfg;
         WlanCfg.handleWlanConfig(request);
     });
-  
+
+
+
+  server.on("/wifi.json", HTTP_GET, [this](AsyncWebServerRequest *request){
+    request->send(LittleFS, "/config/wifi.json", "application/json");
+  });  
   server.on("/location",HTTP_POST, [](AsyncWebServerRequest *request){
     
   });
@@ -66,11 +85,12 @@ void mServer::start(){
     ESP.restart();
   });
   
-
+  server.onNotFound(notFound);  
 }
 
 
-String mServer::processor(const String path){
+
+String Router::processor(const String path){
   Serial.println("Function Processor OK");
   File file = LittleFS.open(path, "r");
   if(!file){
