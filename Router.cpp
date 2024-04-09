@@ -73,8 +73,8 @@ void Router::start(){
         WlanCfg.handleWlanConfig(request);
     });
 
-  server.on("/temp",HTTP_GET,[](AsyncWebServerRequest *request){
-    
+  server.on("/querytemp",HTTP_GET,[this](AsyncWebServerRequest *request){
+    request->send(200, "application/json", "{\"temperature1\":"+String(temperature1)+", \"temperature2\":"+String(temperature2)+"}");
   });
   
 
@@ -92,7 +92,8 @@ void Router::start(){
 }
 
 void Router::setTemperature(float temp1, float temp2){
-  temperature1 = temp1; temperature2 = temp2;
+  temperature1 = temp1; 
+  temperature2 = temp2;
 }
 
 String Router::processor(const String path){

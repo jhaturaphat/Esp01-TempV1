@@ -21,8 +21,7 @@ class Router {
 
   private:
     float temperature1 = 0.0;
-    float temperature2 = 0.0;
-    float location = "Not Set";
+    float temperature2 = 0.0;    
 };
 
 #endif
