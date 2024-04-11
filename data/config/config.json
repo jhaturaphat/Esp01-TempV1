@@ -1,0 +1,13 @@
+{
+    "ntp": "time.google.com",
+    "alarm": {
+        "sensor_1": {
+            "low": 2,
+            "high": 8
+        },
+        "sensor_2": {
+            "low": 2,
+            "high": 8
+        }
+    }
+}

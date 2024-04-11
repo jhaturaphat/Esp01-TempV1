@@ -18,6 +18,8 @@ class Router {
     void start();
     String processor(const String path);    
     void setTemperature(float temp1, float temp2);
+    void notFound(AsyncWebServerRequest *request);
+    bool handleNtp(AsyncWebServerRequest *request);
 
   private:
     float temperature1 = 0.0;

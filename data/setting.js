@@ -185,7 +185,7 @@ fetch("/ntwcfg", {
   /* ตั้งค่า ntpConfigCmd */	
   document.getElementById("ntpConfigCmd").addEventListener('click', function(e){
       e.preventDefault();
-      var url = "/ntpConfig?ntpserver="+document.getElementById("ntpserver").value;
+      var url = "/ntpCfg?ntpserver="+document.getElementById("ntpserver").value;
       loadXMLDoc(url, ntpConfig);
   }, false);	
 
@@ -207,7 +207,9 @@ fetch("/ntwcfg", {
       }else if (document.getElementById('DEVICE2').checked) {
           device = document.getElementById('DEVICE2').value;
       }						
-      var url = "/alarmConf?LOW="+document.getElementById("LOW").value+"&HIGH="+document.getElementById("HIGH").value+"&DEVICE="+device;
+      var url = "/alarmConf?LOW="+document.getElementById("LOW").value
+      +"&HIGH="+document.getElementById("HIGH").value
+      +"&DEVICE="+device;
       loadXMLDoc(url, alarmConf);
   }, false);
 

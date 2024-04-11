@@ -11,10 +11,6 @@
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
 
-void notFound(AsyncWebServerRequest *request) {
-    request->send(404, "text/plain", "Not found");
-}
-
 void Router::begin(){
   if(!LittleFS.begin()){
     Serial.println("An Error has occurred while mounting LittleFS");
@@ -23,6 +19,10 @@ void Router::begin(){
   server.begin();  
   delay(1);
   this->start();
+}
+
+void Router::notFound(AsyncWebServerRequest *request) {
+    request->send(404, "text/plain", "Not found");
 }
 
 void Router::start(){
@@ -81,20 +81,95 @@ void Router::start(){
   server.on("/wifi.json", HTTP_GET, [this](AsyncWebServerRequest *request){
     request->send(LittleFS, "/config/wifi.json", "application/json");
   });  
-  server.on("/location",HTTP_POST, [](AsyncWebServerRequest *request){
-    
+  server.on("/config.json", HTTP_GET, [this](AsyncWebServerRequest *request){
+    request->send(LittleFS, "/config/config.json", "application/json");
+  });  
+  
+  server.on("/ntpCfg", HTTP_GET, [this](AsyncWebServerRequest *request){
+    this->handleNtp(request);
   });
+
+  server.on("/setRange", HTTP_GET, [this](AsyncWebServerRequest *request){
+    this->handleNtp(request);
+  });
+  
+  
   server.on("/restart", HTTP_GET,[](AsyncWebServerRequest *request){
     ESP.restart();
   });
   
-  server.onNotFound(notFound);  
+ 
 }
-
+//######### Set data to share value
 void Router::setTemperature(float temp1, float temp2){
   temperature1 = temp1; 
   temperature2 = temp2;
 }
+
+// ############### NTP Server config ############################
+bool Router::handleNtp(AsyncWebServerRequest *request){
+  if(!request->hasParam("ntpserver")){
+    request->send(400, "application/json","{\"status\":\"ntpserver not found\"}");
+    return false;
+  }
+  
+ File file = LittleFS.open("/config/config.json", "r");
+  if(!file){
+    Serial.println("Failed to data open config.json at function NTP for reading"); 
+    return false;
+  }
+ 
+//  Parse JSON
+size_t size = file.size();
+String ntpsrv = request->getParam("ntpserver")->value();
+Serial.println(file.size());
+
+if(file.size() <= 0){ //หากไฟล์ว่างเปล่าให้เพิ่มค่าไปใหม่
+  file.close();
+  StaticJsonDocument<64> doc;
+  doc["ntp"] = ntpsrv;
+  File writeFile = LittleFS.open("/config/config.json", "w");
+  if (serializeJson(doc, writeFile) == 0) {
+    Serial.println("Failed to write to data.json");
+    writeFile.close();    
+    return false;
+  }
+  writeFile.close();
+  request->send(200, "application/json","{\"status\":\"new config ntp\"}");
+  return true;
+}
+
+std::unique_ptr<char[]> buf(new char[size]);
+file.readBytes(buf.get(), size);
+file.close();
+
+// Adjust the size if necessary
+DynamicJsonDocument doc(1024);
+DeserializationError  error = deserializeJson(doc, buf.get());
+if(error){  
+  request->send(400, "application/json","{\"status\":\"Failed to parse config.json\"}");
+  return false;
+}
+doc["ntp"] = ntpsrv;
+// Write back to data.json
+  File outFile = LittleFS.open("/config/config.json", "w");
+  if (!outFile) {    
+    request->send(400, "application/json","{\"status\":\"Failed to open config.json for writing\"}");
+    return false;
+  }
+  if (serializeJson(doc, outFile) == 0) {
+    Serial.println("Failed to write to data.json");
+    outFile.close();
+    request->send(400, "application/json","{\"status\":\"Failed to write to config.json\"}");
+    return false;
+  }
+  outFile.close();
+  request->send(200, "application/json","{\"status\":\"update ntp success\"}");
+  
+  return true;
+  
+}
+//#################################################
 
 String Router::processor(const String path){
   Serial.println("Function Processor OK");

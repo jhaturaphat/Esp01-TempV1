@@ -90,3 +90,11 @@ button[type="reset"]:hover{
     display: none;
 }
 
+
+.sub-body{
+    background-color: #51e0a5 ;
+    border-radius: 5px;
+    padding: 5px;
+    display: flex;
+    
+  }
