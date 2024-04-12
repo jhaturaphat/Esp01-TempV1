@@ -21,7 +21,12 @@
 					<input type="text" size="15" maxlength="15"  value="" id="Password" placeholder="รหัส Wifi">
 				</div>
 				<div class="form-group-row">
-					<input type="checkbox" name="fixip" id="fixip"><label for="fixip">Static IP</label>
+					<input type="checkbox" name="wifichk" id="wifichk">
+					<label for="wifichk">ตรวจสอบการเชื่อมต่อ WiFi</label>
+				</div>
+				<div class="form-group-row">
+					<input type="checkbox" name="fixip" id="fixip">
+					<label for="fixip">กำหนดไอพี</label>
 				</div>
 				<div class="form-group network">
 					<label class="label">IP Address:  </label>
@@ -103,9 +108,9 @@
 				<div class="form-group">				
 					<label class="label">H:m:s </label>
 					<div>
-						<input type="text" size="2" maxlength="2" value="" id="alH" placeholder="hh">
-						<input type="text" size="2" maxlength="2" value="" id="alM" placeholder="mm">
-						<input type="text" size="2" maxlength="2" value="" id="alS" placeholder="ss">
+						<input type="text" size="2" maxlength="2" value="16" id="alH" placeholder="hh">
+						<input type="text" size="2" maxlength="2" value="00" id="alM" placeholder="mm">
+						<input type="text" size="2" maxlength="2" value="00" id="alS" placeholder="ss">
 					</div>					 
 				</div>
 				<small>เครื่องจะแจ้งเตือนตามเวลาที่ระบุ</small>
@@ -188,7 +193,7 @@
 			<h1>Restart ทุกๆ</h1>
 			<form action="/alarmInterval">
 				<div class="form-group">				
-					<label class="label">หน่วยวินาที่ </label>					
+					<label class="label">หน่วยวินาที่ <small>ค่าเริ่มต้น ทุก 2 เดือน</small> </label>					
 					<input type="text"value="" id="alH" placeholder="">										 
 				</div>
 				<small>เครื่องจะส่งแจ้งเตือนทกๆวินาที่ หน่วยเป็นวินาที</small>

@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", function(xhttp) {
             cFunction(this);
       }else if (this.status == 400){
           alertStyle("error", "Oops...", text= this.responseText);			    	
-      }else if (this.status == 401) {
+      }else if (this.status >= 401) {
           alertStyle("error", "Oops...", text= this.responseText);	
       }
       };
@@ -74,6 +74,8 @@ document.addEventListener("DOMContentLoaded", function(xhttp) {
             title: "บันทึกสำเร็จ",
             text: "การั้งค่าสำเร็จแล้ว"				  
           });				
+      }else if(xhttp.status > 200){
+        alertStyle('error','Oops...');
       }
   }
 
@@ -131,32 +133,28 @@ document.addEventListener("DOMContentLoaded", function(xhttp) {
           alertStyle("error", "Oops...","ตรวจสอบ IP Address ใหม่");	
           return;
       }	
+     
       // ดึงข้อมูลจากฟอร์ม HTML
     var ssid = document.getElementById('ssid').value;
     var password = document.getElementById('Password').value;
+    var wifichk = document.getElementById('wifichk').value;
     var fixip = document.getElementById('fixip').checked;
-    var ip = document.getElementById('IP').value;
-    var subnetMask = document.getElementById('SN').value;
+    var ipaddress = document.getElementById('IP').value;
+    var subnetmask = document.getElementById('SN').value;
     var gateway = document.getElementById('GW').value;
     var dns = document.getElementById('DNS').value;
-// ตัวอย่างการส่ง request แบบ POST ด้วย fetch API
-fetch("/ntwcfg", {
-    method: 'GET',
-    headers: {
-        'Content-Type': 'text/plain' // กำหนด Content-Type เป็น application/json
-    },
-    body: JSON.stringify(jsonData) // แปลงข้อมูล JSON เป็น string และส่งไปใน body ของ request
-})
-.then(response => {
-    // ตรวจสอบว่า request สำเร็จหรือไม่
-    if (!response.ok) {
-        throw new Error('Network response was not ok');
-    }
-    // ดำเนินการต่อไป เช่น การจัดการ response
-})
-.catch(error => {
-    console.error('There has been a problem with your fetch operation:', error);
-});     
+
+    var url = "/ntwcfg?"
+    +"ssid="+ssid
+    +"&password="+password
+    +"&wifichk="+wifichk
+    +"&fixip="+fixip
+    +"&ipaddress="+ipaddress
+    +"&subnetmask="+subnetmask
+    +"&gateway="+gateway
+    +"&dns="+dns
+      loadXMLDoc(url, networkconfig);
+     
   }, false);
 
   document.getElementById("fixip").addEventListener('change',function(e){

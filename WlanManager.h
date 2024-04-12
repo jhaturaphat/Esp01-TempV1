@@ -25,6 +25,8 @@ class WlanManager {
     void updateWlanConfig(const char* fixIP);
     void updateWlanConfig(const char* newSSID, const char* newPassword);
     String chipID();
+    String wifichk = "true";
+    bool WifiHealthy();
 };
 
 #endif
