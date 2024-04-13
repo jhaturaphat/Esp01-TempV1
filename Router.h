@@ -20,10 +20,12 @@ class Router {
     void setTemperature(float temp1, float temp2);
     void notFound(AsyncWebServerRequest *request);
     bool handleNtp(AsyncWebServerRequest *request);
+    void setScanNetwork(String ssid);
 
   private:
     float temperature1 = 0.0;
-    float temperature2 = 0.0;    
+    float temperature2 = 0.0;   
+    String listSsid = "{}"; 
 };
 
 #endif

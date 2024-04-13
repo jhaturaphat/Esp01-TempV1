@@ -3,62 +3,63 @@
 
 
 void WlanManager::startAP(const char* ssid, const char* password) {
-  MDNS.addService("http","tcp",80);
+  MDNS.addService("http", "tcp", 80);
   WiFi.softAP(ssid, password);
+  delay(100);
   Serial.println("Access Point started");
   
 }
 
 //ดึงข้อมูล ChipID
-String WlanManager::chipID(){
+String WlanManager::chipID() {
   String chipID = "ESP_123456";
-  #ifdef ARDUINO_ARCH_ESP32  //ถ้าเป็น ESP32
-    uint32_t chipId = 0;
-      for(int i=0; i<17; i=i+8) {
-        chipId |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
-      }
-      chipID = String(chipId);
-  #elif defined(ARDUINO_ARCH_ESP8266) //ถ้าเป็น ESP8266
-    chipID = String(ESP.getChipId());
-  #endif
+#ifdef ARDUINO_ARCH_ESP32  //ถ้าเป็น ESP32
+  uint32_t chipId = 0;
+  for (int i = 0; i < 17; i = i + 8) {
+    chipId |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
+  }
+  chipID = String(chipId);
+#elif defined(ARDUINO_ARCH_ESP8266) //ถ้าเป็น ESP8266
+  chipID = String(ESP.getChipId());
+#endif
   return chipID;
 }
 //รับข้อมูลมาเก็บไว้
 void WlanManager::handleWlanConfig(AsyncWebServerRequest *request) {
-  if(!request->hasParam("ssid")){
-    request->send(400, "application/json","{\"status\":\"ssid not found\"}");
+  if (!request->hasParam("ssid")) {
+    request->send(400, "application/json", "{\"status\":\"ssid not found\"}");
     return;
   }
-    String ssid = request->getParam("ssid")->value();    
-    String password = request->getParam("password")->value();    
-    String ip = request->getParam("ipaddress")->value();    
-    String sn = request->getParam("subnetmask")->value();    
-    String gw = request->getParam("gateway")->value();    
-    String dns = request->getParam("dns")->value();    
-    String fixip = request->getParam("fixip")->value();
-    String wifichk = request->getParam("wifichk")->value();
+  String ssid = request->getParam("ssid")->value();
+  String password = request->getParam("password")->value();
+  String ip = request->getParam("ipaddress")->value();
+  String sn = request->getParam("subnetmask")->value();
+  String gw = request->getParam("gateway")->value();
+  String dns = request->getParam("dns")->value();
+  String fixip = request->getParam("fixip")->value();
+  String wifichk = request->getParam("wifichk")->value();
 
-  if(ssid.isEmpty()){
+  if (ssid.isEmpty()) {
     request->send(400, "application/json", "{\"result\":\"SSID เป็นค่าว่าง\"}");
     return;
   }
-    StaticJsonDocument<300> doc;
-    doc["ssid"] = ssid;
-    doc["password"] = password;
-    doc["ip"] = ip;
-    doc["sn"] = sn;
-    doc["gw"] = gw;
-    doc["dns"] = dns;
-    doc["fixip"] = fixip;
-    doc["wifichk"] = wifichk;
+  StaticJsonDocument<300> doc;
+  doc["ssid"] = ssid;
+  doc["password"] = password;
+  doc["ip"] = ip;
+  doc["sn"] = sn;
+  doc["gw"] = gw;
+  doc["dns"] = dns;
+  doc["fixip"] = fixip;
+  doc["wifichk"] = wifichk;
 
-    File configFile = LittleFS.open("/config/wifi.json", "w");
-    if(serializeJson(doc, configFile) == 0) {
-      request->send(400, "application/json", "{\"result\":\"Failed to write to config file\"}");
-    }
-     configFile.close();
-    request->send(200, "application/json", "{\"result\":\"Config file updated successfully\"}");
-    
+  File configFile = LittleFS.open("/config/wifi.json", "w");
+  if (serializeJson(doc, configFile) == 0) {
+    request->send(400, "application/json", "{\"result\":\"Failed to write to config file\"}");
+  }
+  configFile.close();
+  request->send(200, "application/json", "{\"result\":\"Config file updated successfully\"}");
+
 }
 
 bool WlanManager::WlanSetup() {
@@ -90,7 +91,7 @@ bool WlanManager::WlanSetup() {
   const char* subnet = doc["sn"].as<const char*>();
   const char* gateway = doc["gw"].as<const char*>();
   const char* dns = doc["dns"].as<const char*>();
-  
+
 
   // กำหนดค่า IP address ในลักษณะของ IPAddress object
   IPAddress ipAddr;
@@ -104,7 +105,7 @@ bool WlanManager::WlanSetup() {
 
   // กำหนดค่าให้ ESP8266 ถ้าต้องการ Fixip
   if (fixip == "true") WiFi.config(ipAddr, dnsAddr, gatewayAddr, subnetMask);
-  
+
   // โค้ดการเชื่อมต่อ Wi-Fi
   WiFi.begin(ssid, password);
   if (WiFi.waitForConnectResult() != WL_CONNECTED) {
@@ -208,10 +209,35 @@ void WlanManager::updateWlanConfig(const char* newSSID, const char* newPassword)
   Serial.println("Config file updated successfully");
 }
 
-bool WifiHealthy(){
-  if(WiFi.status() == WL_CONNECTED){
+bool WifiHealthy() {
+
+  if (WiFi.status() == WL_CONNECTED) {
     return true;
-  }else{
+  } else {
     return false;
   }
+}
+
+String WlanManager::scanNetwork() {
+ int n = WiFi.scanNetworks();
+  delay(100);  
+  String str = "[";
+    Serial.println("scan done");    
+    if (n == 0) {
+        Serial.println("no networks found");        
+        return "{}";
+    } else {
+        Serial.printf(" %d networks found", n); 
+        for (int i = 0; i < n; ++i) {   
+          if(i == (n-1)){
+            str += "{\"ssid\":\""+WiFi.SSID(i)+"\",\"rssi\":"+WiFi.RSSI(i)+"}]";        
+          }else{
+            str += "{\"ssid\":\""+WiFi.SSID(i)+"\",\"rssi\":"+WiFi.RSSI(i)+"},";
+          }
+            
+            delay(100);
+        } 
+        Serial.println(str);             
+        return str;
+    }
 }

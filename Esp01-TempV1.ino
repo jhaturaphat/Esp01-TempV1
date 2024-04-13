@@ -48,7 +48,11 @@ void setup() {
   } else if (digitalRead(button_Pin) == LOW) {
     // เริ่มโหมด Access Point
     wlan.startAP(apSsid.c_str(), apPassword);
-  }
+  }  
+  String ListSsid = wlan.scanNetwork();
+  delay(100);
+  router.setScanNetwork(ListSsid);
+//  ################
   router.begin();
 // ############## ตั้งค่า NTP Client ####################
 timeClient.begin();

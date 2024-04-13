@@ -4,6 +4,10 @@
 document.addEventListener("DOMContentLoaded", function(xhttp) {
     // ทำงานเมื่อโปรแกรมถูกโหลด
      loadXMLDoc('/wifi.json', getConfig);
+     setTimeout(() => {
+        loadXMLDoc('/scannetwork.json', scanNetwork);
+     }, 300);
+     
     });
 
   function loadXMLDoc(url,cFunction) {
@@ -66,6 +70,15 @@ document.addEventListener("DOMContentLoaded", function(xhttp) {
            alertStyle('error','Oops...',obj.status);
        }
    }
+
+ function scanNetwork(xhttp){
+    console.log(xhttp);
+    var ssids = JSON.parse(xhttp.response);
+    ssids.sort((a, b) => b.rssi - a.rssi);
+    var ssidArray = ssids.map(obj => obj.ssid);
+    console.log(ssidArray);
+    autocomplete(document.getElementById("ssid"), ssidArray);
+ }
 
   function networkconfig(xhttp){
       if(xhttp.status == 200)	{
@@ -199,15 +212,7 @@ document.addEventListener("DOMContentLoaded", function(xhttp) {
   /*ตั้งค่า Alarm */
   document.getElementById("alarmConfCmd").addEventListener('click', function(e){
       e.preventDefault();		
-      var device = "undefined";
-      if(document.getElementById('DEVICE1').checked){
-          device = document.getElementById('DEVICE1').value;
-      }else if (document.getElementById('DEVICE2').checked) {
-          device = document.getElementById('DEVICE2').value;
-      }						
-      var url = "/alarmConf?LOW="+document.getElementById("LOW").value
-      +"&HIGH="+document.getElementById("HIGH").value
-      +"&DEVICE="+device;
+      
       loadXMLDoc(url, alarmConf);
   }, false);
 

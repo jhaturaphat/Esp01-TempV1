@@ -64,11 +64,15 @@ void Router::start(){
   server.on("/script.js", HTTP_GET, [this](AsyncWebServerRequest *request){
     request->send(LittleFS, "/js/script.js", "text/javascript");
   });
+  server.on("/autocomplete.js", HTTP_GET, [this](AsyncWebServerRequest *request){
+    request->send(LittleFS, "/autocomplete.js", "text/javascript");
+  });
   server.on("/wifi.json", HTTP_GET, [this](AsyncWebServerRequest *request){
     request->send(LittleFS, "/config/wifi.json", "application/json");
   });
   
   server.on("/ntwcfg", HTTP_GET, [](AsyncWebServerRequest *request)   {
+//    เข้าถึง Function แบบ สร้าง Object มาก่อน
         WlanManager WlanCfg;  
         WlanCfg.handleWlanConfig(request);
     });
@@ -83,14 +87,17 @@ void Router::start(){
   });  
   server.on("/config.json", HTTP_GET, [this](AsyncWebServerRequest *request){
     request->send(LittleFS, "/config/config.json", "application/json");
-  });  
+  });
+  server.on("/scannetwork.json", HTTP_GET,[this](AsyncWebServerRequest *request){       
+   request->send(200, "application/json", this->listSsid);
+  });
   
   server.on("/ntpCfg", HTTP_GET, [this](AsyncWebServerRequest *request){
     this->handleNtp(request);
   });
 
   server.on("/setRange", HTTP_GET, [this](AsyncWebServerRequest *request){
-    this->handleNtp(request);
+    this->handleRange(request);
   });
   
   
@@ -99,6 +106,11 @@ void Router::start(){
   });
   
  
+}
+
+//
+void Router::setScanNetwork(String ssid){
+  listSsid = ssid;
 }
 //######### Set data to share value
 void Router::setTemperature(float temp1, float temp2){
@@ -170,6 +182,10 @@ doc["ntp"] = ntpsrv;
   
 }
 //#################################################
+
+void Router::handleRange(AsyncWebServerRequest *request){
+  
+}
 
 String Router::processor(const String path){
   Serial.println("Function Processor OK");

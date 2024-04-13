@@ -11,8 +11,8 @@
 		<div class="container">		
 		<div class="row">
 			<h1>ตั้งค่าให้กับอุปกรณ์ IOT</h1>
-			<form action="/ntwcfg" method="post" id="ntwcfg">				
-				<div class="form-group">
+			<form action="/ntwcfg" method="post" id="ntwcfg" autocomplete="off">				
+				<div class="form-group autocomplete">
 					<label class="label">SSID :  </label>
 					<input type="text" size="15" maxlength="15" value="" id="ssid" placeholder="ชื่อ WiFi">
 				</div>
@@ -70,29 +70,31 @@
 		<div class="row">
 		<h1>ตั้งค่า ช่วงอุณหภูมิ</h1>				
 		<form action="/alarmConf">  
+			<!-- เซ็นเซอร์ตัวที่ 1 --> 
 			<label class="" for="DEVICE1">เซ็นเซอร์ตัวที่ 1</label>
 			<div class="sub-body">
 				
 				<div class="form-group">				
 					<label class="label">Min :  </label>
-					<input type="text" size="8" maxlength="4" value="2" id="SR1LOW" placeholder="ใส่ค่าเป็นตัวเลข">
+					<input type="text" size="8" maxlength="4" value="2" id="S1LOW" placeholder="ใส่ค่าเป็นตัวเลข">
 				</div>
 				<div class="form-group">				
 					<label class="label">Max :  </label>
-					<input type="text" size="8" maxlength="4" value="8" id="SR1HIGH" placeholder="ใส่ค่าเป็นตัวเลข">
+					<input type="text" size="8" maxlength="4" value="8" id="S1HIGH" placeholder="ใส่ค่าเป็นตัวเลข">
 				</div>
 			</div>	
 			<br>
+			<!-- เซ็นเซอร์ตัวที่ 2 -->
 			<label class="" for="DEVICE2">เซ็นเซอร์ตัวที่ 2</label>	
 			<div class="sub-body">
 						
 				<div class="form-group">				
 					<label class="label">Min :  </label>
-					<input type="text" size="8" maxlength="4" value="2" id="SR2LOW" placeholder="ใส่ค่าเป็นตัวเลข">
+					<input type="text" size="8" maxlength="4" value="2" id="S2LOW" placeholder="ใส่ค่าเป็นตัวเลข">
 				</div>
 				<div class="form-group">				
 					<label class="label">Max :  </label>
-					<input type="text" size="8" maxlength="4" value="8" id="SR2HIGH" placeholder="ใส่ค่าเป็นตัวเลข">
+					<input type="text" size="8" maxlength="4" value="8" id="S2HIGH" placeholder="ใส่ค่าเป็นตัวเลข">
 				</div>	
 			</div>		
 			<div class="btn-in-div">				
@@ -219,5 +221,6 @@
 
 		<script src="js/sweetalert.js"></script>
 		<script src="setting.js"></script>		
+		<script src="autocomplete.js"></script>		
 </body>
 </html>
