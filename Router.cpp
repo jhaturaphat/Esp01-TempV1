@@ -95,7 +95,10 @@ void Router::start(){
   server.on("/ntpCfg", HTTP_GET, [this](AsyncWebServerRequest *request){
     this->handleNtp(request);
   });
-
+  server.on("/alarmCfg",HTTP_GET, [](AsyncWebServerRequest *request){
+    this->handleAlarmCfg(request);
+  });
+  
   server.on("/setRange", HTTP_GET, [this](AsyncWebServerRequest *request){
     this->handleRange(request);
   });
@@ -108,6 +111,13 @@ void Router::start(){
  
 }
 
+void Router::handleAlarmCfg(AsyncWebServerRequest *request){
+  if(!request->hasParam("ssr1low")) return request->send(400,"application/json", "{\"error\":\"No parameters ssr1low"\}");
+  if(!request->hasParam("ssr2high")) return request->send(400,"application/json", "{\"error\":\"No parameters ssr1high"\}");
+  if(!request->hasParam("ssr2low")) return request->send(400,"application/json", "{\"error\":\"No parameters ssr2low"\}");
+  if(!request->hasParam("ssr2high")) return request->send(400,"application/json", "{\"error\":\"No parameters ssr2high"\}");
+  
+}
 //
 void Router::setScanNetwork(String ssid){
   listSsid = ssid;
@@ -184,7 +194,10 @@ doc["ntp"] = ntpsrv;
 //#################################################
 
 void Router::handleRange(AsyncWebServerRequest *request){
-  
+  if(!request->hasParam("ntpserver")){
+    request->send(400, "application/json","{\"status\":\"ntpserver not found\"}");
+    return false;
+  }
 }
 
 String Router::processor(const String path){
