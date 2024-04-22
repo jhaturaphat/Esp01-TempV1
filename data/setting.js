@@ -212,11 +212,15 @@ document.addEventListener("DOMContentLoaded", function(xhttp) {
   /*ตั้งค่า Alarm */
   document.getElementById("alarmConfCmd").addEventListener('click', function(e){
       e.preventDefault();		
-      let ssr1high = document.getElementById("ssr1low").value;
       let ssr1low = document.getElementById("ssr1high").value;
+      let ssr1high = document.getElementById("ssr1low").value;      
       let ssr2low = document.getElementById("ssr2low").value;
       let ssr2high = document.getElementById("ssr2high").value;
-      const url = "/"
+      const url = "/alarmCfg?"
+      +"ssr1low="+ssr1low
+      +"&ssr1high="+ssr1high
+      +"&ssr2low="+ssr2low
+      +"&ssr2high="+ssr2high
       loadXMLDoc(url, alarmConf);
   }, false);
 

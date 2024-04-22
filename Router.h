@@ -21,6 +21,8 @@ class Router {
     void notFound(AsyncWebServerRequest *request);
     bool handleNtp(AsyncWebServerRequest *request);
     void setScanNetwork(String ssid);
+    void handleAlarmCfg(AsyncWebServerRequest *request);
+    void handleRange(AsyncWebServerRequest *request);
 
   private:
     float temperature1 = 0.0;
