@@ -96,7 +96,8 @@ void Router::start(){
     this->handleNtp(request);
   });
   server.on("/alarmCfg",HTTP_GET, [this](AsyncWebServerRequest *request){
-    this->handleAlarmCfg(request);
+    // this->handleAlarmCfg(request);
+    DevConfig::handleAlarmCfg(request);
   });
   
   server.on("/setRange", HTTP_GET, [this](AsyncWebServerRequest *request){
@@ -112,7 +113,7 @@ void Router::start(){
 }
 
 //ตั้งค่า ช่วงอุณหภูมิ
-void Router::handleAlarmCfg(AsyncWebServerRequest *request){
+/*void Router::handleAlarmCfg(AsyncWebServerRequest *request){
   if(!request->hasParam("ssr1low")) return request->send(400,"application/json", "{\"error\":\"No parameters ssr1low\"}");
   if(!request->hasParam("ssr1high")) return request->send(400,"application/json", "{\"error\":\"No parameters ssr1high\"}");
   if(!request->hasParam("ssr2low")) return request->send(400,"application/json", "{\"error\":\"No parameters ssr2low\"}");
@@ -159,7 +160,7 @@ void Router::handleAlarmCfg(AsyncWebServerRequest *request){
   newFile.close();
   return request->send(200,"application/json","{\"ok\":\"New config file created\"}");    
   }else{
-//    หากพบ key alarm temperature ให้อัพเดทแทน
+    //หากพบ key alarm temperature ให้อัพเดทแทน
   File file = LittleFS.open("/config/config.json", "r+");
   if(!file) return request->send(400,"application/json","{\"error\":\"Failed to open config.json for update\"}");
   // Parse the JSON object
@@ -189,7 +190,7 @@ void Router::handleAlarmCfg(AsyncWebServerRequest *request){
   return request->send(200,"application/json","{\"ok\":\"Config.json updated successfully\"}");  
  
   }
-}
+}*/
 //
 void Router::setScanNetwork(String ssid){
   listSsid = ssid;

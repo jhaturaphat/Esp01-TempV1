@@ -200,14 +200,6 @@ document.addEventListener("DOMContentLoaded", function(xhttp) {
       loadXMLDoc(url, ntpConfig);
   }, false);	
 
-  
-  /* ดูการตั้งค่า Alarm Sensors */
-  document.getElementById("DEVICE1").addEventListener('click', function(e){
-      loadXMLDoc('/getconfig', getConfig);
-  });
-  document.getElementById("DEVICE2").addEventListener('click', function(e){
-      loadXMLDoc('/getconfig', getConfig);
-  });
 
   /*ตั้งค่า Alarm */
   document.getElementById("alarmConfCmd").addEventListener('click', function(e){
@@ -216,7 +208,7 @@ document.addEventListener("DOMContentLoaded", function(xhttp) {
       let ssr1high = document.getElementById("ssr1low").value;      
       let ssr2low = document.getElementById("ssr2low").value;
       let ssr2high = document.getElementById("ssr2high").value;
-      const url = "/alarmCfg?"
+      let url = "/alarmCfg?"
       +"ssr1low="+ssr1low
       +"&ssr1high="+ssr1high
       +"&ssr2low="+ssr2low
