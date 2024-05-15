@@ -16,6 +16,9 @@
   class DevConfig {
     public:
       static void handleAlarmCfg(AsyncWebServerRequest *request);
+      static bool handleNtp(AsyncWebServerRequest *request);
+      static void handleAlarmRange(AsyncWebServerRequest *request);
+      static void handleLineConf(AsyncWebServerRequest *request);
   };
 
 #endif

@@ -106,39 +106,34 @@
 
 		<div class="row">
 			<h1>ตั้งเวลาแจ้งเตือนสถานะ</h1>
-			<form action="/alarmStatus">
+			<form action="/alarmRange">
 				<div class="form-group">				
-					<label class="label">H:m:s </label>
+					<label class="label">ช่วงเวลาที่ 1  </label>
 					<div>
-						<input type="text" size="2" maxlength="2" value="16" id="alH" placeholder="hh">
-						<input type="text" size="2" maxlength="2" value="00" id="alM" placeholder="mm">
-						<input type="text" size="2" maxlength="2" value="00" id="alS" placeholder="ss">
+						<input type="number" size="2" maxlength="2" value="0" id="alH1" placeholder="hh"> 🕛
 					</div>					 
 				</div>
-				<small>เครื่องจะแจ้งเตือนตามเวลาที่ระบุ</small>
+				<div class="form-group">				
+					<label class="label">ช่วงเวลาที่ 2  </label>
+					<div>
+						<input type="number" size="2" maxlength="2" value="8" id="alH2" placeholder="hh"> 🕖
+					</div>					 
+				</div>
+				<div class="form-group">				
+					<label class="label">ช่วงเวลาที่ 3  </label>
+					<div>
+						<input type="number" size="2" maxlength="2" value="16" id="alH3" placeholder="hh"> 🕓
+					</div>					 
+				</div>
+				<small>เครื่องจะแจ้งเตือนตามเวลาที่ระบุ </small>
 				<div class="btn-in-div">				
-					<BUTTON type="button" id="alarmStatusCmd">บันทึก</BUTTON> 
+					<BUTTON type="button" id="alarmRangeCmd">บันทึก</BUTTON> 
 					<BUTTON type="reset">ลบ</BUTTON> 
 				</div>
 			</form>
 			
 		</div>
-
-		<div class="row">
-			<h1>ความถี่</h1>
-			<form action="/alarmInterval">
-				<div class="form-group">				
-					<label class="label">หน่วยวินาที่ </label>					
-					<input type="text"value="" id="alH" placeholder="">
-										 
-				</div>
-				<div class="btn-in-div">				
-					<BUTTON type="button" id="alarmIntervalCmd">บันทึก</BUTTON> 
-					<BUTTON type="reset">ลบ</BUTTON> 
-				</div>
-			</form>
-			<small>เครื่องจะส่งแจ้งเตือนทกๆวินาที่ หน่วยเป็นวินาที</small>
-		</div>
+	
 		
 		<div class="row">
 		<div class="label-txt">
@@ -192,13 +187,13 @@
 		</div>
 
 		<div class="row">
-			<h1>Restart ทุกๆ</h1>
+			<h1>Restart ทุกๆ กีวัน</h1>
 			<form action="/alarmInterval">
 				<div class="form-group">				
-					<label class="label">หน่วยวินาที่ <small>ค่าเริ่มต้น ทุก 2 เดือน</small> </label>					
-					<input type="text"value="" id="alH" placeholder="">										 
+					<label class="label"><small>ค่าเริ่มต้น ทุก 60 วัน</small> </label>					
+					<input type="text"value="" id="terminate" placeholder="">										 
 				</div>
-				<small>เครื่องจะส่งแจ้งเตือนทกๆวินาที่ หน่วยเป็นวินาที</small>
+				<small>ป้องกันเครื่องค้างเมื่อใช้เป็นเวลานาน</small>
 				<div class="btn-in-div">				
 					<BUTTON type="button" id="alarmIntervalCmd">บันทึก</BUTTON> 
 					<BUTTON type="reset">ลบ</BUTTON> 

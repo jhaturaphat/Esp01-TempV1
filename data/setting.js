@@ -1,16 +1,5 @@
 
-
-
-document.addEventListener("DOMContentLoaded", function(xhttp) {
-    // ทำงานเมื่อโปรแกรมถูกโหลด
-     loadXMLDoc('/wifi.json', getConfig);
-     setTimeout(() => {
-        loadXMLDoc('/scannetwork.json', scanNetwork);
-     }, 300);
-     
-    });
-
-  function loadXMLDoc(url,cFunction) {
+function loadXMLDoc(url,cFunction) {
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
       if (this.readyState == 4 && this.status == 200) {				      
@@ -24,6 +13,16 @@ document.addEventListener("DOMContentLoaded", function(xhttp) {
         xhttp.open("GET", url, true);
         xhttp.send();
   }
+
+document.addEventListener("DOMContentLoaded", function(xhttp) {
+    // ทำงานเมื่อโปรแกรมถูกโหลด    
+     loadXMLDoc('/wifi.json', getConfig);
+     loadXMLDoc('/config.json', configSys)
+     setTimeout(() => {
+        loadXMLDoc('/scannetwork.json', scanNetwork);
+     }, 300);
+     
+    });
 
   function alertStyle(icon = "error", title = "Oops...", text = "เกิดข้อผิดพลาดบางอย่าง"){
       Swal.fire({
@@ -71,6 +70,16 @@ document.addEventListener("DOMContentLoaded", function(xhttp) {
        }
    }
 
+   function configSys(xhttp){
+    console.log(xhttp);
+     var data = JSON.parse(xhttp.response);
+    
+    document.getElementById("ntpserver").value = data.ntp;
+    document.getElementById("ssr1low").value    = data.alarm.sensor_1.low;
+    document.getElementById("ssr1high").value   = data.alarm.sensor_1.high;
+    document.getElementById("ssr2low").value    = data.alarm.sensor_2.low;
+    document.getElementById("ssr2high").value   = data.alarm.sensor_2.high;
+   }
  function scanNetwork(xhttp){
     console.log(xhttp);
     var ssids = JSON.parse(xhttp.response);
@@ -103,27 +112,34 @@ document.addEventListener("DOMContentLoaded", function(xhttp) {
   }
 
   function alarmConf(xhttp){
-      if(xhttp.status == 200 && xhttp.responseText === "success")	{
+      if(xhttp.status == 200 )	{
           alertStyle("success", "บันทึกสำเร็จ", "การั้งค่าสำเร็จแล้ว");					
       }
   }
 
+  function alarmRange(xhttp){
+    if(xhttp.status == 200 )	{
+        alertStyle("success", "บันทึกสำเร็จ", "การั้งค่าสำเร็จแล้ว");					
+    }
+  }
+
   function lineConf(xhttp){			
-      if(xhttp.status == 200 && xhttp.responseText === "success")	{
+    console.log(xhttp.responseText);
+      if(xhttp.status == 200 )	{
           alertStyle("success", "บันทึกสำเร็จ", "การั้งค่าสำเร็จแล้ว");					
       }				
       
   }
 
   function locationConf(xhttp){			
-      if(xhttp.status == 200 && xhttp.responseText === "success")	{
+      if(xhttp.status == 200 )	{
           alertStyle("success", "บันทึกสำเร็จ", "การั้งค่าสำเร็จแล้ว");					
       }				
       
   }
 
   function apiConf(xhttp){
-      if(xhttp.status == 200 && xhttp.responseText === "success")	{
+      if(xhttp.status == 200 )	{
           alertStyle("success", "บันทึกสำเร็จ", "การั้งค่าสำเร็จแล้ว");					
       }				
   }
@@ -133,7 +149,7 @@ document.addEventListener("DOMContentLoaded", function(xhttp) {
   }
 
   function Restart(xhttp){
-      if(xhttp.status === 200 && xhttp.responseText === "success"){
+      if(xhttp.status === 200 ){
           alertStyle("success", "กำลังรีสตาร์จ", "การรีสตาร์จจะทำในไม่กีวินาที");
       }
   }
@@ -214,6 +230,19 @@ document.addEventListener("DOMContentLoaded", function(xhttp) {
       +"&ssr2low="+ssr2low
       +"&ssr2high="+ssr2high
       loadXMLDoc(url, alarmConf);
+  }, false);
+
+/*ตั้งเวลาแจ้งเตือนสถานะ*/
+  document.getElementById("alarmRangeCmd").addEventListener('click',function(e){
+    e.preventDefault();
+    let alH1 = document.getElementById("alH1").value;
+    let alH2 = document.getElementById("alH2").value;
+    let alH3 = document.getElementById("alH3").value;
+    let url = "/alarmRange?"
+    +"alH1="+alH1
+    +"&alH2="+alH2
+    +"&alH3="+alH3
+    loadXMLDoc(url, alarmRange);
   }, false);
 
   /*ตั้งค่า line token */
