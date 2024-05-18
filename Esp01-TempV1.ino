@@ -11,6 +11,9 @@
 #include <LiquidCrystal_I2C.h>
 #include <TridentTD_LineNotify.h>
 
+#include <InfluxDbClient.h>
+#include <InfluxDbCloud.h>
+
 #include "display.h"
 #include "variable.h"
 
