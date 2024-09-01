@@ -17,7 +17,8 @@ function loadXMLDoc(url,cFunction) {
 document.addEventListener("DOMContentLoaded", function(xhttp) {
     // ทำงานเมื่อโปรแกรมถูกโหลด    
      loadXMLDoc('/wifi.json', getConfig);
-     loadXMLDoc('/config.json', configSys)
+     loadXMLDoc('/config.json', configSys);
+     loadXMLDoc('/influxdb.json', configInfluxdb);
      setTimeout(() => {
         loadXMLDoc('/scannetwork.json', scanNetwork);
      }, 300);
@@ -74,12 +75,23 @@ document.addEventListener("DOMContentLoaded", function(xhttp) {
     console.log(xhttp);
      var data = JSON.parse(xhttp.response);
     
-    document.getElementById("ntpserver").value = data.ntp;
+    document.getElementById("ntpserver").value  = data.ntp;
     document.getElementById("ssr1low").value    = data.alarm.sensor_1.low;
     document.getElementById("ssr1high").value   = data.alarm.sensor_1.high;
     document.getElementById("ssr2low").value    = data.alarm.sensor_2.low;
     document.getElementById("ssr2high").value   = data.alarm.sensor_2.high;
    }
+
+   function configInfluxdb(xhttp){
+    console.log(xhttp);
+    var data = JSON.parse(xhttp.response);
+    document.getElementById("influxdb_url").value       = data.influxdb_url;
+    document.getElementById("influxdb_token").value     = data.influxdb_token;
+    document.getElementById("influxdb_org").value       = data.influxdb_org;
+    document.getElementById("influxdb_bucket").value    = data.influxdb_bucket;
+    document.getElementById("influxdb_point").value     = data.influxdb_point;
+   }
+
  function scanNetwork(xhttp){
     console.log(xhttp);
     var ssids = JSON.parse(xhttp.response);
@@ -106,41 +118,51 @@ document.addEventListener("DOMContentLoaded", function(xhttp) {
           Swal.fire({
             icon: "success",
             title: "บันทึกสำเร็จ",
-            text: "การั้งค่าสำเร็จแล้ว"				  
+            text: "การตั้งค่าสำเร็จแล้ว"				  
           });	
       }
   }
 
+  function influxdbConfig(xhttp){
+    if(xhttp.status == 200){
+        Swal.fire({
+          icon: "success",
+          title: "บันทึกสำเร็จ",
+          text: "การตั้งค่าสำเร็จแล้ว"				  
+        });	
+    }
+}
+
   function alarmConf(xhttp){
       if(xhttp.status == 200 )	{
-          alertStyle("success", "บันทึกสำเร็จ", "การั้งค่าสำเร็จแล้ว");					
+          alertStyle("success", "บันทึกสำเร็จ", "การตั้งค่าสำเร็จแล้ว");					
       }
   }
 
   function alarmRange(xhttp){
     if(xhttp.status == 200 )	{
-        alertStyle("success", "บันทึกสำเร็จ", "การั้งค่าสำเร็จแล้ว");					
+        alertStyle("success", "บันทึกสำเร็จ", "การตั้งค่าสำเร็จแล้ว");					
     }
   }
 
   function lineConf(xhttp){			
     console.log(xhttp.responseText);
       if(xhttp.status == 200 )	{
-          alertStyle("success", "บันทึกสำเร็จ", "การั้งค่าสำเร็จแล้ว");					
+          alertStyle("success", "บันทึกสำเร็จ", "การตั้งค่าสำเร็จแล้ว");					
       }				
       
   }
 
   function locationConf(xhttp){			
       if(xhttp.status == 200 )	{
-          alertStyle("success", "บันทึกสำเร็จ", "การั้งค่าสำเร็จแล้ว");					
+          alertStyle("success", "บันทึกสำเร็จ", "การตั้งค่าสำเร็จแล้ว");					
       }				
       
   }
 
   function apiConf(xhttp){
       if(xhttp.status == 200 )	{
-          alertStyle("success", "บันทึกสำเร็จ", "การั้งค่าสำเร็จแล้ว");					
+          alertStyle("success", "บันทึกสำเร็จ", "การตั้งค่าสำเร็จแล้ว");					
       }				
   }
 
@@ -216,7 +238,18 @@ document.addEventListener("DOMContentLoaded", function(xhttp) {
       loadXMLDoc(url, ntpConfig);
   }, false);	
 
+// ตั้งค่า influxdbCmd
+document.getElementById("influxdbCmd").addEventListener('click', function(e){
+    e.preventDefault();   
 
+    var url = "/influxdbCfg?"
+    url+="influxdb_url="+document.getElementById("influxdb_url").value;
+    url+="&influxdb_token="+document.getElementById("influxdb_token").value;
+    url+="&influxdb_org="+document.getElementById("influxdb_org").value;
+    url+="&influxdb_bucket="+document.getElementById("influxdb_bucket").value;
+    url+="&influxdb_point="+document.getElementById("influxdb_point").value;
+    loadXMLDoc(url, influxdbConfig);
+});
   /*ตั้งค่า Alarm */
   document.getElementById("alarmConfCmd").addEventListener('click', function(e){
       e.preventDefault();		
